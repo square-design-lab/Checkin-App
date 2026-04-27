@@ -1,0 +1,431 @@
+/* ─── Design tokens ─────────────────────────────────────────────────────────── */
+:root {
+  --primary:       #2C6FAC;
+  --primary-dark:  #1E5285;
+  --primary-light: #EBF3FB;
+  --accent:        #4BA3B7;
+  --bg:            #F4F7FA;
+  --surface:       #FFFFFF;
+  --text:          #1A2B3C;
+  --text-muted:    #6B7E8F;
+  --border:        #D4DEE8;
+  --success:       #27AE60;
+  --success-bg:    #E8F8EF;
+  --error:         #C0392B;
+  --error-bg:      #FDEDEB;
+  --warning:       #E67E22;
+  --warning-bg:    #FEF5EC;
+  --radius:        14px;
+  --radius-lg:     22px;
+  --shadow:        0 2px 12px rgba(0,0,0,0.08);
+  --shadow-lg:     0 6px 28px rgba(0,0,0,0.12);
+}
+
+/* ─── Reset ─────────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+  /* Prevent iOS text size adjustment in landscape */
+  -webkit-text-size-adjust: 100%;
+}
+
+/* ─── App shell ─────────────────────────────────────────────────────────────── */
+.app-shell {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  background: var(--primary);
+  color: #fff;
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.app-header-logo {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.app-header-location {
+  font-size: 14px;
+  font-weight: 500;
+  background: rgba(255,255,255,0.2);
+  padding: 5px 14px;
+  border-radius: 20px;
+}
+
+.app-main {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Screen wrapper ─────────────────────────────────────────────────────────── */
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 48px;
+  min-height: 0;
+}
+
+.screen-inner {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+/* ─── Typography ─────────────────────────────────────────────────────────────── */
+.screen-title {
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--primary);
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+
+.screen-subtitle {
+  font-size: 19px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+/* ─── Buttons ─────────────────────────────────────────────────────────────────── */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 20px 32px;
+  font-size: 21px;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: opacity 0.12s, transform 0.1s;
+  line-height: 1.2;
+}
+
+.btn:active {
+  transform: scale(0.97);
+  opacity: 0.88;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-primary:active {
+  background: var(--primary-dark);
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--primary);
+  border: 2.5px solid var(--primary);
+}
+
+.btn-secondary:active {
+  background: var(--primary-light);
+}
+
+.btn-large {
+  padding: 26px 48px;
+  font-size: 26px;
+  border-radius: var(--radius-lg);
+  min-width: 260px;
+}
+
+.btn-stack {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ─── Forms ───────────────────────────────────────────────────────────────────── */
+.form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.1px;
+}
+
+.form-input {
+  padding: 16px 18px;
+  font-size: 20px;
+  font-family: inherit;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(44,111,172,0.18);
+}
+
+/* ─── Status messages ─────────────────────────────────────────────────────────── */
+.msg-error {
+  width: 100%;
+  background: var(--error-bg);
+  border: 1.5px solid #F1948A;
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  color: var(--error);
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+/* ─── Welcome screen ──────────────────────────────────────────────────────────── */
+.welcome-icon {
+  width: 108px;
+  height: 108px;
+  background: var(--primary-light);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+
+.welcome-icon svg {
+  width: 56px;
+  height: 56px;
+  fill: var(--primary);
+}
+
+/* ─── Appointment cards ───────────────────────────────────────────────────────── */
+.appt-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.appt-card {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px 26px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: border-color 0.12s, box-shadow 0.12s, transform 0.1s;
+  box-shadow: var(--shadow);
+}
+
+.appt-card:active {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(44,111,172,0.18);
+  transform: scale(0.99);
+}
+
+.appt-time {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.appt-type {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.appt-provider {
+  font-size: 15px;
+  color: var(--text-muted);
+  margin-top: 5px;
+}
+
+/* ─── Confirm arrival card ───────────────────────────────────────────────────── */
+.detail-card {
+  width: 100%;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow);
+  margin-bottom: 28px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 16px;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 16px;
+  color: var(--text-muted);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.detail-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: right;
+}
+
+/* ─── Loading spinner ─────────────────────────────────────────────────────────── */
+.spinner-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.spinner {
+  width: 52px;
+  height: 52px;
+  border: 4px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner-label {
+  font-size: 19px;
+  color: var(--text-muted);
+}
+
+/* ─── Thank you / success ─────────────────────────────────────────────────────── */
+.status-icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  font-size: 50px;
+}
+
+.status-icon.success { background: var(--success-bg); }
+.status-icon.warning { background: var(--warning-bg); }
+
+.status-title {
+  font-size: 36px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.status-title.success { color: var(--success); }
+.status-title.warning { color: var(--warning); }
+.status-title.primary { color: var(--primary); }
+
+.status-body {
+  font-size: 21px;
+  color: var(--text);
+  text-align: center;
+  line-height: 1.55;
+  max-width: 480px;
+  margin-bottom: 24px;
+}
+
+.countdown-note {
+  font-size: 15px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* ─── Phase stub badge ────────────────────────────────────────────────────────── */
+.stub-badge {
+  position: fixed;
+  top: 70px;
+  right: 14px;
+  background: #F39C12;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  z-index: 100;
+  pointer-events: none;
+}
+
+/* ─── iPad responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .screen { padding: 24px 20px; }
+  .screen-title { font-size: 28px; }
+  .btn-large { width: 100%; }
+  .app-header { padding: 12px 20px; }
+}

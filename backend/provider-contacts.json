@@ -1,0 +1,14 @@
+[
+  {
+    "athena_provider_id": "36",
+    "provider_name": "Laura Anderson, LPCC",
+    "mobile_number": "+16515551234",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "28",
+    "provider_name": "Suzanne Aoun, MD",
+    "mobile_number": "",
+    "sms_opt_in": false
+  }
+]
