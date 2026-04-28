@@ -291,7 +291,6 @@ app.post('/api/checkin/appointments', async (req, res) => {
         startdate: dateParam,
         enddate: dateParam,
         departmentid,
-        ignorerestrictions: true,
       }
     );
 
@@ -302,15 +301,26 @@ app.post('/api/checkin/appointments', async (req, res) => {
 
     console.log('[appointments] Appointment count:', rawAppts.length);
 
-    const appointments = rawAppts.map((a) => ({
-      appointmentId:   String(a.appointmentid),
-      appointmentType: a.appointmenttype || 'Appointment',
-      appointmentDate: a.date || a.appointmentdate,
-      appointmentTime: a.starttime || a.appointmenttime || '',
-      providerId:      String(a.providerid || ''),
-      providerName:    a.providername || a.providerusername || 'Your provider',
-      departmentId:    String(a.departmentid || departmentid),
-    }));
+    const appointments = rawAppts.map((a) => {
+      const pid = String(a.providerid || '');
+      // Cross-reference provider-contacts.json for the display name.
+      // Athena's appointment response often omits or abbreviates the provider name.
+      const contact = providerContacts.find((p) => String(p.athena_provider_id) === pid);
+      const providerName = contact?.provider_name
+        || a.providername
+        || a.providerusername
+        || 'Your provider';
+
+      return {
+        appointmentId:   String(a.appointmentid),
+        appointmentType: a.appointmenttype || 'Appointment',
+        appointmentDate: a.date || a.appointmentdate,
+        appointmentTime: a.starttime || a.appointmenttime || '',
+        providerId:      pid,
+        providerName,
+        departmentId:    String(a.departmentid || departmentid),
+      };
+    });
 
     return res.json({ appointments });
   } catch (err) {
