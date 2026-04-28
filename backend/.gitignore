@@ -1,3 +1,11 @@
 node_modules/
+backend/.env
 .env
+.env.example
 *.log
+dist/
+.DS_Store
+SETUP.md
+checkin-app-summary.md
+api-credentials.txt
+project-context.txt
