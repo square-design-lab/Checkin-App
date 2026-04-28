@@ -1,13 +1,259 @@
 [
   {
+    "athena_provider_id": "1",
+    "provider_name": "Justin Gerstner, MD",
+    "mobile_number": "+8801406383589",
+    "sms_opt_in": true
+  },
+  {
     "athena_provider_id": "36",
     "provider_name": "Laura Anderson, LPCC",
-    "mobile_number": "+16515551234",
+    "mobile_number": "",
     "sms_opt_in": false
   },
   {
     "athena_provider_id": "28",
     "provider_name": "Suzanne Aoun, MD",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "4",
+    "provider_name": "Diana Bjorkman, LGSW",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "8",
+    "provider_name": "Emily Campbell, NP",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "37",
+    "provider_name": "Saul Clayman",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "12",
+    "provider_name": "Kathryn Conery, LICSW",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "20",
+    "provider_name": "Lisa Cross, LMFT",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "19",
+    "provider_name": "Laura Dabruzzi, LICSW",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "26",
+    "provider_name": "Sabrina Eller",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "21",
+    "provider_name": "Alicia Exsted, LPCC",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "34",
+    "provider_name": "Elizabeth Falk, LICSW",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "22",
+    "provider_name": "Adam Fieldson, LPCC",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "9",
+    "provider_name": "Twilight Florido-Bergad, DNP",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "10",
+    "provider_name": "Claire Garber, DO",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "32",
+    "provider_name": "Anna Grimm, LMFT",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "33",
+    "provider_name": "Hana Hassan, MS",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "27",
+    "provider_name": "Krystle Holliday",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "43",
+    "provider_name": "Jenna Halvorson, LPCC",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "5",
+    "provider_name": "Kirby Kaczor, LPCC",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "18",
+    "provider_name": "Anna King Laubach, LICSW",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "39",
+    "provider_name": "Allyson Kuye, PMHNP",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "29",
+    "provider_name": "Amber Madume, LPCC",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "6",
+    "provider_name": "Demi Mancini, LPCC",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "40",
+    "provider_name": "Brooke McColl, MA",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "13",
+    "provider_name": "Ann Monson Slagle, PA-C",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "35",
+    "provider_name": "Lisa Morgel Cryns, LMFT",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "44",
+    "provider_name": "Laura Mortenson, LICSW",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "7",
+    "provider_name": "Lauren Nievinski, PA-C",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "15",
+    "provider_name": "Lola Oluwa-Okougbo, PMHNP",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "38",
+    "provider_name": "Stephen Palmer, LMFT",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "11",
+    "provider_name": "Sara Polley, MD",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "23",
+    "provider_name": "Brittany Reif-Wenner, LICSW",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "42",
+    "provider_name": "Michael Richardson, LP",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "14",
+    "provider_name": "Julie Sabin, LPCC",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "24",
+    "provider_name": "Suzanne Shanklin, LPCC",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "41",
+    "provider_name": "Jennifer Tagg, LMFT",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "3",
+    "provider_name": "Ashley Tix, LMFT",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "16",
+    "provider_name": "PA Nhia Vang, MS",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "25",
+    "provider_name": "Rachel Whisney",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "31",
+    "provider_name": "Amanda Windyk, LICSW",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "17",
+    "provider_name": "Karla Wise, LPCC",
+    "mobile_number": "",
+    "sms_opt_in": false
+  },
+  {
+    "athena_provider_id": "30",
+    "provider_name": "Maryellen Zaborowski, LICSW",
     "mobile_number": "",
     "sms_opt_in": false
   }

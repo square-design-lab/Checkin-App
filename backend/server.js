@@ -256,6 +256,22 @@ app.post('/api/checkin/find-patient', async (req, res) => {
 
 // ─── POST /api/checkin/appointments ───────────────────────────────────────────
 
+// DATE_OFFSET_DAYS shifts the appointment lookup date forward by N days.
+// Set to 1 in .env (sandbox) because Athena's minimum scheduling lead time
+// is 24 hours — appointments can't be booked for today in the sandbox.
+// Leave unset (defaults to 0) in production where real same-day appointments exist.
+function appointmentDate() {
+  const offset = parseInt(process.env.DATE_OFFSET_DAYS || '0', 10);
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Chicago',
+    month: '2-digit',
+    day: '2-digit',
+    year: 'numeric',
+  }).format(d);
+}
+
 app.post('/api/checkin/appointments', async (req, res) => {
   const { patientId, departmentid } = req.body;
 
@@ -263,11 +279,10 @@ app.post('/api/checkin/appointments', async (req, res) => {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
-  // _testDate overrides today's date for sandbox testing (e.g. "05/12/2026")
-  // Remove this in production or leave it — it only affects the date filter.
-  const dateParam = req.body._testDate || todayMMDDYYYY();
+  // _testDate in the request body still overrides everything (manual curl testing)
+  const dateParam = req.body._testDate || appointmentDate();
 
-  console.log('[appointments] Looking up appointments for date:', dateParam);
+  console.log('[appointments] Looking up appointments for date:', dateParam, process.env.DATE_OFFSET_DAYS ? `(offset +${process.env.DATE_OFFSET_DAYS}d)` : '(today)');
 
   try {
     const data = await athenaGet(
