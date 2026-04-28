@@ -10,7 +10,7 @@ export default function StaffAssistScreen() {
   const { resetSession } = useCheckin();
   const [countdown, setCountdown] = useState(RESET_SECONDS);
 
-  const reason = location.state?.reason; // 'no_match' | 'ambiguous'
+  const reason = location.state?.reason; // 'no_match' | 'ambiguous' | 'no_dept'
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -34,12 +34,19 @@ export default function StaffAssistScreen() {
         <div className="status-icon warning" aria-hidden="true">⚠</div>
         <h1 className="status-title primary">Please See a Staff Member</h1>
 
-        {reason === 'ambiguous' ? (
+        {reason === 'ambiguous' && (
           <p className="status-body">
             We found multiple records matching your information. A member of our
             team has been notified and will assist you shortly.
           </p>
-        ) : (
+        )}
+        {reason === 'no_dept' && (
+          <p className="status-body">
+            Please scan the QR code in the waiting room to check in, or ask a
+            staff member for assistance.
+          </p>
+        )}
+        {(reason === 'no_match' || !reason) && (
           <p className="status-body">
             We were unable to verify your information. Please double-check your
             name and date of birth, or ask a staff member for assistance.

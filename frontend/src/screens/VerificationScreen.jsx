@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCheckin } from '../context/CheckinContext';
 
@@ -11,6 +11,12 @@ function toAthenaDate(isoDate) {
 export default function VerificationScreen() {
   const navigate = useNavigate();
   const { dept, setPatient, setAppointments } = useCheckin();
+
+  // If no location is set (patient navigated here without ?dept= in the URL),
+  // send them to staff assist immediately — the form can't work without a dept.
+  useEffect(() => {
+    if (!dept) navigate('/staff-assist', { replace: true, state: { reason: 'no_dept' } });
+  }, [dept, navigate]);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
