@@ -115,6 +115,25 @@ function nowCentralTime12h() {
   }).format(new Date());
 }
 
+// Athena signaturedatetime format: MM/DD/YYYY HH24:MI:SS  (America/Chicago, 24-hour)
+function nowSignatureDateTime() {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Chicago',
+    year:   'numeric',
+    month:  '2-digit',
+    day:    '2-digit',
+    hour:   '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  }).formatToParts(new Date());
+
+  const get = (type) => parts.find((p) => p.type === type)?.value ?? '00';
+  // Normalize "24" → "00" for midnight edge case in some V8 versions
+  const hour = get('hour') === '24' ? '00' : get('hour');
+  return `${get('month')}/${get('day')}/${get('year')} ${hour}:${get('minute')}:${get('second')}`;
+}
+
 async function sendSms(to, body) {
   if (!twilioClient) {
     console.log('[SMS skipped — Twilio not configured]');
@@ -386,14 +405,93 @@ app.post('/api/checkin/alert-support', async (req, res) => {
   return res.json({ success: true });
 });
 
-// ─── Phase 2 stubs — Notices ──────────────────────────────────────────────────
+// ─── Phase 2 — Notices ────────────────────────────────────────────────────────
 
-app.post('/api/checkin/check-notices', async (_req, res) => {
-  return res.json({ all_current: true, notices: [] });
+// POST /api/checkin/check-notices
+// Calls GET /v1/{practiceId}/patients/{patientId}/privacyinformationverified
+// Returns { all_current: true } or { all_current: false, missing: { privacyNotice, insuredSignature, patientSignature } }
+// Fail-safe: on Athena error returns all missing so the form always shows.
+// HIPAA: no patient data in logs.
+
+app.post('/api/checkin/check-notices', async (req, res) => {
+  const { patientId, departmentid } = req.body;
+
+  if (!patientId || !departmentid) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  const allMissing = { privacyNotice: true, insuredSignature: true, patientSignature: true };
+  const isTrue = (v) => v === true || v === 'true';
+
+  try {
+    const data = await athenaGet(
+      `/v1/${process.env.ATHENA_PRACTICE_ID}/patients/${patientId}/privacyinformationverified`,
+      { departmentid }
+    );
+
+    const privacyOk  = isTrue(data.privacynotice?.isprivacynoticeonfile);
+    const insuredOk  = isTrue(data.insuredsignature?.isinsuredsignatureonfile);
+    const patientOk  = isTrue(data.patientsignature?.ispatientsignatureonfile);
+
+    if (privacyOk && insuredOk && patientOk) {
+      console.log('[check-notices] all current');
+      return res.json({ all_current: true });
+    }
+
+    const missing = {
+      privacyNotice:     !privacyOk,
+      insuredSignature:  !insuredOk,
+      patientSignature:  !patientOk,
+    };
+
+    console.log('[check-notices] missing:', Object.keys(missing).filter((k) => missing[k]).join(', '));
+    return res.json({ all_current: false, missing });
+
+  } catch (err) {
+    console.error('[check-notices] Athena error:', err.response?.status, err.message);
+    // Fail-safe: show form with all three notices rather than silently skipping
+    return res.json({ all_current: false, missing: allMissing });
+  }
 });
 
-app.post('/api/checkin/submit-notices', async (_req, res) => {
-  return res.json({ success: true });
+// POST /api/checkin/submit-notices
+// Calls POST /v1/{practiceId}/patients/{patientId}/privacyinformationverified
+// Only sends boolean flags for notices that are actually missing.
+// HIPAA: signatureName is PHI — never logged.
+
+app.post('/api/checkin/submit-notices', async (req, res) => {
+  const { patientId, departmentid, signatureName, missing } = req.body;
+
+  if (!patientId || !departmentid || !signatureName) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  const body = {
+    departmentid,
+    signaturename:     signatureName.trim(),
+    signaturedatetime: nowSignatureDateTime(),
+  };
+
+  // Only include the flags for notices that are actually missing —
+  // sending a flag for one already on file would re-stamp it unnecessarily.
+  if (missing?.privacyNotice)    body.privacynotice    = 'true';
+  if (missing?.insuredSignature) body.insuredsignature = 'true';
+  if (missing?.patientSignature) body.patientsignature = 'true';
+
+  const submittingKeys = Object.keys(body)
+    .filter((k) => !['departmentid', 'signaturename', 'signaturedatetime'].includes(k));
+  console.log('[submit-notices] Submitting flags:', submittingKeys.join(', ') || 'none');
+
+  try {
+    await athenaPost(
+      `/v1/${process.env.ATHENA_PRACTICE_ID}/patients/${patientId}/privacyinformationverified`,
+      body
+    );
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('[submit-notices] Athena error:', err.response?.status, err.message, JSON.stringify(err.response?.data));
+    return res.json({ success: false });
+  }
 });
 
 // ─── Phase 3 stubs — Balance / Payment ───────────────────────────────────────
