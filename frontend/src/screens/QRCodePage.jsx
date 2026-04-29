@@ -49,7 +49,7 @@ const styles = {
     background: '#f8f9fa',
     padding: '32px 40px',
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
-    color: '#1a2b3c',
+    color: '#425853',
   },
   toolbar: {
     display: 'flex',
@@ -61,15 +61,15 @@ const styles = {
     fontSize: 26,
     fontWeight: 700,
     margin: 0,
-    color: '#2c6fac',
+    color: '#425853',
   },
   printBtn: {
-    background: '#2c6fac',
+    background: '#425853',
     color: '#fff',
     border: 'none',
     borderRadius: 8,
-    padding: '10px 28px',
-    fontSize: 16,
+    padding: '12px 28px',
+    fontSize: 18,
     fontWeight: 600,
     cursor: 'pointer',
   },
@@ -95,7 +95,7 @@ const styles = {
     fontSize: 22,
     fontWeight: 700,
     margin: 0,
-    color: '#1a2b3c',
+    color: '#425853',
   },
   qrWrap: {
     lineHeight: 0, // removes extra space below SVG

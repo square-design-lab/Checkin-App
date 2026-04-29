@@ -1,27 +1,35 @@
-/* ─── Design tokens ─────────────────────────────────────────────────────────── */
+/* ─── Font note ──────────────────────────────────────────────────────────────
+   Montserrat is loaded via Google Fonts in index.html.
+   To switch to self-hosted: drop Montserrat-Regular/Medium/SemiBold/Bold.ttf
+   into src/assets/fonts/, remove the <link> from index.html, and add
+   @font-face rules here (one per weight: 400, 500, 600, 700).
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ─── Design tokens ──────────────────────────────────────────────────────── */
 :root {
-  --primary:       #2C6FAC;
-  --primary-dark:  #1E5285;
-  --primary-light: #EBF3FB;
-  --accent:        #4BA3B7;
-  --bg:            #F4F7FA;
-  --surface:       #FFFFFF;
-  --text:          #1A2B3C;
-  --text-muted:    #6B7E8F;
-  --border:        #D4DEE8;
-  --success:       #27AE60;
-  --success-bg:    #E8F8EF;
-  --error:         #C0392B;
-  --error-bg:      #FDEDEB;
-  --warning:       #E67E22;
-  --warning-bg:    #FEF5EC;
-  --radius:        14px;
-  --radius-lg:     22px;
-  --shadow:        0 2px 12px rgba(0,0,0,0.08);
-  --shadow-lg:     0 6px 28px rgba(0,0,0,0.12);
+  --primary:        #425853;
+  --primary-dark:   #334842;
+  --primary-light:  #EFF2F1;
+  --accent:         #FFBB5E;
+  --background:     #EFF2F1;
+  --surface:        #FFFFFF;
+  --text:           #333133;
+  --text-muted:     #627067;
+  --border:         #CDD6D4;
+  --border-dark:    #B8C2BF;
+  --success:        #425853;
+  --success-bg:     #EFF2F1;
+  --error:          #C0392B;
+  --error-bg:       #FDEDEC;
+  --warning:        #E67E22;
+  --warning-bg:     #FEF9E7;
+  --radius:         10px;
+  --radius-lg:      14px;
+  --shadow:         0 2px 12px rgba(66,88,83,0.10);
+  --shadow-lg:      0 6px 28px rgba(66,88,83,0.16);
 }
 
-/* ─── Reset ─────────────────────────────────────────────────────────────────── */
+/* ─── Reset ──────────────────────────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -34,16 +42,18 @@ html, body, #root {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont,
+               'Segoe UI', system-ui, sans-serif;
+  font-weight: 400;
   font-size: 18px;
   line-height: 1.5;
   color: var(--text);
-  background: var(--bg);
+  background: var(--background);
   /* Prevent iOS text size adjustment in landscape */
   -webkit-text-size-adjust: 100%;
 }
 
-/* ─── App shell ─────────────────────────────────────────────────────────────── */
+/* ─── App shell ──────────────────────────────────────────────────────────── */
 .app-shell {
   height: 100%;
   display: flex;
@@ -61,16 +71,17 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
-.app-header-logo {
-  font-size: 19px;
-  font-weight: 700;
-  letter-spacing: -0.2px;
+.app-header-logo-img {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
 }
 
 .app-header-location {
   font-size: 14px;
   font-weight: 500;
-  background: rgba(255,255,255,0.2);
+  color: var(--primary);
+  background: var(--accent);
   padding: 5px 14px;
   border-radius: 20px;
 }
@@ -83,7 +94,7 @@ body {
   flex-direction: column;
 }
 
-/* ─── Screen wrapper ─────────────────────────────────────────────────────────── */
+/* ─── Screen wrapper ─────────────────────────────────────────────────────── */
 .screen {
   flex: 1;
   display: flex;
@@ -103,7 +114,7 @@ body {
   gap: 0;
 }
 
-/* ─── Typography ─────────────────────────────────────────────────────────────── */
+/* ─── Typography ─────────────────────────────────────────────────────────── */
 .screen-title {
   font-size: 34px;
   font-weight: 700;
@@ -115,12 +126,13 @@ body {
 
 .screen-subtitle {
   font-size: 19px;
+  font-weight: 400;
   color: var(--text-muted);
   text-align: center;
   margin-bottom: 36px;
 }
 
-/* ─── Buttons ─────────────────────────────────────────────────────────────────── */
+/* ─── Buttons ────────────────────────────────────────────────────────────── */
 .btn {
   display: flex;
   align-items: center;
@@ -128,40 +140,46 @@ body {
   width: 100%;
   padding: 20px 32px;
   font-size: 21px;
+  font-family: inherit;
   font-weight: 600;
+  letter-spacing: 0.01em;
   border: none;
   border-radius: var(--radius);
   cursor: pointer;
   touch-action: manipulation;
   user-select: none;
   -webkit-user-select: none;
-  transition: opacity 0.12s, transform 0.1s;
+  transition: background-color 0.12s, opacity 0.12s, transform 0.1s, box-shadow 0.1s;
   line-height: 1.2;
 }
 
 .btn:active {
-  transform: scale(0.97);
-  opacity: 0.88;
+  transform: scale(0.98);
+  opacity: 0.92;
 }
 
 .btn:disabled {
-  opacity: 0.55;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
 .btn-primary {
   background: var(--primary);
   color: #fff;
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 .btn-primary:active {
   background: var(--primary-dark);
+  box-shadow: var(--shadow);
 }
 
 .btn-secondary {
-  background: var(--surface);
+  background: transparent;
   color: var(--primary);
-  border: 2.5px solid var(--primary);
+  border: 2px solid var(--primary);
+  font-weight: 600;
 }
 
 .btn-secondary:active {
@@ -182,7 +200,7 @@ body {
   gap: 14px;
 }
 
-/* ─── Forms ───────────────────────────────────────────────────────────────────── */
+/* ─── Forms ──────────────────────────────────────────────────────────────── */
 .form {
   width: 100%;
   display: flex;
@@ -198,7 +216,7 @@ body {
 
 .form-label {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text);
   letter-spacing: 0.1px;
 }
@@ -207,6 +225,7 @@ body {
   padding: 16px 18px;
   font-size: 20px;
   font-family: inherit;
+  font-weight: 400;
   border: 2px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
@@ -220,10 +239,10 @@ body {
 .form-input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(44,111,172,0.18);
+  box-shadow: 0 0 0 3px rgba(66,88,83,0.18);
 }
 
-/* ─── Status messages ─────────────────────────────────────────────────────────── */
+/* ─── Status messages ────────────────────────────────────────────────────── */
 .msg-error {
   width: 100%;
   background: var(--error-bg);
@@ -235,7 +254,7 @@ body {
   line-height: 1.4;
 }
 
-/* ─── Welcome screen ──────────────────────────────────────────────────────────── */
+/* ─── Welcome screen ─────────────────────────────────────────────────────── */
 .welcome-icon {
   width: 108px;
   height: 108px;
@@ -253,7 +272,7 @@ body {
   fill: var(--primary);
 }
 
-/* ─── Appointment cards ───────────────────────────────────────────────────────── */
+/* ─── Appointment cards ──────────────────────────────────────────────────── */
 .appt-list {
   width: 100%;
   display: flex;
@@ -278,7 +297,7 @@ body {
 
 .appt-card:active {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(44,111,172,0.18);
+  box-shadow: 0 0 0 3px rgba(66,88,83,0.18);
   transform: scale(0.99);
 }
 
@@ -297,11 +316,12 @@ body {
 
 .appt-provider {
   font-size: 15px;
+  font-weight: 400;
   color: var(--text-muted);
   margin-top: 5px;
 }
 
-/* ─── Confirm arrival card ───────────────────────────────────────────────────── */
+/* ─── Confirm arrival card ───────────────────────────────────────────────── */
 .detail-card {
   width: 100%;
   background: var(--surface);
@@ -326,8 +346,8 @@ body {
 
 .detail-label {
   font-size: 16px;
-  color: var(--text-muted);
   font-weight: 500;
+  color: var(--text-muted);
   flex-shrink: 0;
 }
 
@@ -338,7 +358,7 @@ body {
   text-align: right;
 }
 
-/* ─── Loading spinner ─────────────────────────────────────────────────────────── */
+/* ─── Loading spinner ────────────────────────────────────────────────────── */
 .spinner-wrap {
   display: flex;
   flex-direction: column;
@@ -361,10 +381,11 @@ body {
 
 .spinner-label {
   font-size: 19px;
+  font-weight: 400;
   color: var(--text-muted);
 }
 
-/* ─── Thank you / success ─────────────────────────────────────────────────────── */
+/* ─── Thank you / success ────────────────────────────────────────────────── */
 .status-icon {
   width: 100px;
   height: 100px;
@@ -393,6 +414,7 @@ body {
 
 .status-body {
   font-size: 21px;
+  font-weight: 400;
   color: var(--text);
   text-align: center;
   line-height: 1.55;
@@ -402,12 +424,13 @@ body {
 
 .countdown-note {
   font-size: 15px;
+  font-weight: 400;
   color: var(--text-muted);
   text-align: center;
   margin-top: 20px;
 }
 
-/* ─── iPad responsive ─────────────────────────────────────────────────────────── */
+/* ─── iPad responsive ────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .screen { padding: 24px 20px; }
   .screen-title { font-size: 28px; }

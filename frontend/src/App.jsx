@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Routes, Route, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useCheckin } from './context/CheckinContext';
+import logo from './assets/logo.png';
 
 import WelcomeScreen from './screens/WelcomeScreen';
 import VerificationScreen from './screens/VerificationScreen';
@@ -61,7 +62,7 @@ export default function App() {
   return (
     <div className="app-shell">
       <header className="app-header">
-        <span className="app-header-logo">Vantage Mental Health</span>
+        <img src={logo} alt="Vantage Mental Health" className="app-header-logo-img" />
         {locationName && (
           <span className="app-header-location">{locationName}</span>
         )}
