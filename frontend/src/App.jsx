@@ -11,6 +11,7 @@ import BalanceScreen from './screens/BalanceScreen';
 import ThankYouScreen from './screens/ThankYouScreen';
 import NoAppointmentScreen from './screens/NoAppointmentScreen';
 import StaffAssistScreen from './screens/StaffAssistScreen';
+import QRCodePage from './screens/QRCodePage';
 
 const INACTIVITY_MS = 60 * 1000;
 
@@ -20,6 +21,12 @@ export default function App() {
   const [searchParams] = useSearchParams();
   const { initDept, locationName, resetSession } = useCheckin();
   const timerRef = useRef(null);
+  // Track current pathname in a ref so the timer callback can read it
+  // without being re-registered on every navigation change.
+  const pathnameRef = useRef(location.pathname);
+  useEffect(() => {
+    pathnameRef.current = location.pathname;
+  }, [location.pathname]);
 
   // Read dept from URL once on load (?dept=1, ?dept=5, ?dept=8)
   useEffect(() => {
@@ -27,11 +34,15 @@ export default function App() {
     if (deptParam) initDept(deptParam);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Inactivity timer — 60 s of no interaction on any screen → back to Welcome
+  // Inactivity timer — 60 s of no interaction → back to Welcome.
+  // Skips the reset when already on the Welcome screen (/) or the admin
+  // QR code page (/qr) — no patient session to clear on those screens.
   useEffect(() => {
     function resetTimer() {
       if (timerRef.current) clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => {
+        const path = pathnameRef.current;
+        if (path === '/' || path === '/qr') return;
         resetSession();
         navigate('/', { replace: true });
       }, INACTIVITY_MS);
@@ -67,6 +78,7 @@ export default function App() {
           <Route path="/thankyou" element={<ThankYouScreen />} />
           <Route path="/no-appointment" element={<NoAppointmentScreen />} />
           <Route path="/staff-assist" element={<StaffAssistScreen />} />
+          <Route path="/qr" element={<QRCodePage />} />
         </Routes>
       </main>
     </div>

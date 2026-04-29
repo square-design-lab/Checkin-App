@@ -533,6 +533,9 @@ app.post('/api/checkin/balance', async (req, res) => {
         ? entry.balance
         : 0;
 
+
+    /* const amount = 25.00; */ // TEMP — remove after testing
+
     console.log(`[balance] resolved: $${amount.toFixed(2)}`);
     return res.json({ balance: amount });
 

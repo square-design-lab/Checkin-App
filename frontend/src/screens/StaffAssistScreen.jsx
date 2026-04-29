@@ -42,8 +42,8 @@ export default function StaffAssistScreen() {
         )}
         {reason === 'no_dept' && (
           <p className="status-body">
-            Please scan the QR code in the waiting room to check in, or ask a
-            staff member for assistance.
+            Please use the QR code in the waiting room to begin check-in, or
+            ask a staff member for assistance.
           </p>
         )}
         {(reason === 'no_match' || !reason) && (
