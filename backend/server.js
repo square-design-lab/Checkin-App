@@ -494,12 +494,55 @@ app.post('/api/checkin/submit-notices', async (req, res) => {
   }
 });
 
-// ─── Phase 3 stubs — Balance / Payment ───────────────────────────────────────
+// ─── Phase 3 — Balance ────────────────────────────────────────────────────────
 
-app.post('/api/checkin/balance', async (_req, res) => {
-  return res.json({ balance: 0 });
+// POST /api/checkin/balance
+// Calls GET /v1/{practiceId}/patients/{patientId}?departmentid=...
+// Finds the balances[] entry whose departmentlist includes the patient's dept.
+// Returns { balance: amount } (number). Returns { balance: 0 } on any error,
+// no match, or cleanbalance: false.
+// HIPAA: logs only the resolved dollar amount — no PHI.
+
+app.post('/api/checkin/balance', async (req, res) => {
+  const { patientId, departmentid } = req.body;
+
+  if (!patientId || !departmentid) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  try {
+    const data = await athenaGet(
+      `/v1/${process.env.ATHENA_PRACTICE_ID}/patients/${patientId}`,
+      { departmentid }
+    );
+
+    // Log the raw balances array so field names can be confirmed in sandbox
+    console.log('[balance] raw balances from Athena:', JSON.stringify(data.balances ?? null));
+
+    const balances = Array.isArray(data.balances) ? data.balances : [];
+
+    // Find the entry whose departmentlist includes the patient's current dept
+    const entry = balances.find((b) => {
+      const depts = String(b.departmentlist || '').split(',').map((d) => d.trim());
+      return depts.includes(String(departmentid));
+    });
+
+    // No match, cleanbalance false, or non-positive → $0
+    const amount =
+      entry && entry.cleanbalance === true && typeof entry.balance === 'number' && entry.balance > 0
+        ? entry.balance
+        : 0;
+
+    console.log(`[balance] resolved: $${amount.toFixed(2)}`);
+    return res.json({ balance: amount });
+
+  } catch (err) {
+    console.error('[balance] Athena error:', err.response?.status, err.message);
+    return res.json({ balance: 0 });
+  }
 });
 
+// POST /api/checkin/record-payment — reserved for future use
 app.post('/api/checkin/record-payment', async (_req, res) => {
   return res.json({ success: true });
 });
