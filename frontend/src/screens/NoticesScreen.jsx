@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCheckin } from '../context/CheckinContext';
+import { NOTICES } from '../notices';
 
-const NOTICE_LABELS = {
-  privacyNotice:      'HIPAA Privacy Notice',
-  insuredSignature:   'Assignment of Benefits',
-  patientSignature:   'Release of Billing Information',
-};
+// Ordered list of keys — controls display order
+const NOTICE_KEYS = ['privacyNotice', 'insuredSignature', 'patientSignature'];
 
 export default function NoticesScreen() {
   const navigate = useNavigate();
@@ -17,6 +15,12 @@ export default function NoticesScreen() {
   const [missing, setMissing] = useState({});
   const [signatureName, setSignatureName] = useState('');
   const [submitError, setSubmitError] = useState('');
+  // Accordion — key of the currently expanded notice, or null
+  const [expandedKey, setExpandedKey] = useState(null);
+
+  function toggleNotice(key) {
+    setExpandedKey((prev) => (prev === key ? null : key));
+  }
 
   // Guard: no patient means the session was lost — go back to Welcome
   useEffect(() => {
@@ -99,7 +103,8 @@ export default function NoticesScreen() {
 
   // Signature is valid when it contains at least one space (first + last name)
   const signatureValid = signatureName.trim().includes(' ');
-  const missingKeys = Object.keys(NOTICE_LABELS).filter((k) => missing[k]);
+  // Preserve original display order regardless of object key order
+  const missingKeys = NOTICE_KEYS.filter((k) => missing[k]);
 
   // ── Checking spinner ──────────────────────────────────────────────────────
   if (phase === 'checking') {
@@ -122,13 +127,81 @@ export default function NoticesScreen() {
           Please acknowledge the following notices by typing your full legal name below.
         </p>
 
-        <ul style={{ width: '100%', marginBottom: 24, paddingLeft: 20 }}>
-          {missingKeys.map((k) => (
-            <li key={k} style={{ marginBottom: 8, fontSize: '1.05rem' }}>
-              {NOTICE_LABELS[k]}
-            </li>
-          ))}
-        </ul>
+        <div style={{ width: '100%', marginBottom: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {missingKeys.map((k) => {
+            const notice = NOTICES[k];
+            const isOpen = expandedKey === k;
+            return (
+              <div
+                key={k}
+                style={{
+                  background: 'var(--surface)',
+                  border: '2px solid var(--border)',
+                  borderRadius: 'var(--radius)',
+                  overflow: 'hidden',
+                }}
+              >
+                {/* Header row */}
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: 16,
+                    padding: '16px 18px',
+                  }}
+                >
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text)' }}>
+                      {notice.title}
+                    </div>
+                    <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginTop: 2 }}>
+                      {notice.summary}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => toggleNotice(k)}
+                    style={{
+                      flexShrink: 0,
+                      background: 'none',
+                      border: '2px solid var(--primary)',
+                      borderRadius: 8,
+                      color: 'var(--primary)',
+                      fontSize: '0.875rem',
+                      fontWeight: 600,
+                      padding: '8px 14px',
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap',
+                      touchAction: 'manipulation',
+                    }}
+                  >
+                    {isOpen ? 'Hide ▲' : 'Read Notice ▼'}
+                  </button>
+                </div>
+
+                {/* Expanded content */}
+                {isOpen && (
+                  <div
+                    style={{
+                      maxHeight: 280,
+                      overflowY: 'auto',
+                      padding: '0 18px 18px',
+                      borderTop: '1px solid var(--border)',
+                      fontSize: '0.9rem',
+                      lineHeight: 1.6,
+                      color: 'var(--text)',
+                    }}
+                  >
+                    <div style={{ paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                      {notice.content}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
 
         <form className="form" onSubmit={handleSubmit} style={{ width: '100%' }}>
           <div className="form-group">
