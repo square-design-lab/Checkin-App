@@ -1,6 +1,6 @@
 import { QRCodeSVG } from 'qrcode.react';
 
-const BASE_URL = 'https://checkin.vantagementalhealth.org';
+const BASE_URL = 'https://vantage-checkin-dev.web.app/';
 
 const LOCATIONS = [
   { name: 'Stillwater',  dept: 1 },

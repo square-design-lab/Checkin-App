@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "YOUR_FIREBASE_PROJECT_ID"
-  }
+    "default": "vantage-checkin-dev",
+    "vantage": "vantage-checkin-dev"
+  },
+  "targets": {},
+  "etags": {}
 }

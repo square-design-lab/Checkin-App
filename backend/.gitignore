@@ -10,3 +10,4 @@ backend/.env
 *.log
 dist/
 .DS_Store
+
