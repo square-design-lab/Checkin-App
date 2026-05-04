@@ -9,7 +9,7 @@ export default function WelcomeScreen() {
 
   return (
     <div className="screen">
-      <div className="screen-inner" style={{ textAlign: 'center' }}>
+      <div className="screen-inner-top">
         <div className="welcome-icon" aria-hidden="true">
           <img src={logo} alt="Vantage Mental Health" className="app-header-logo-img" />
         </div>
@@ -20,7 +20,8 @@ export default function WelcomeScreen() {
         <p className="screen-subtitle" style={{ marginBottom: 48 }}>
           Tap below to check in for your appointment
         </p>
-
+      </div>
+      <div className="screen-inner" style={{ textAlign: 'center' }}>
         <button
           className="btn btn-primary btn-large"
           onClick={() => navigate('/verify')}

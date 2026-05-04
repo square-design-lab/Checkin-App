@@ -105,9 +105,15 @@ body {
   min-height: 0;
 }
 
+.screen-inner-top {
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .screen-inner {
   width: 100%;
-  max-width: 640px;
+  max-width: 560px;
   display: flex;
   flex-direction: column;
   align-items: center;
