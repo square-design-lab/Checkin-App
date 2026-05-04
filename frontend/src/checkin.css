@@ -107,7 +107,7 @@ body {
 
 .screen-inner {
   width: 100%;
-  max-width: 560px;
+  max-width: 640px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -138,6 +138,7 @@ body {
   align-items: center;
   justify-content: center;
   width: 100%;
+  max-width: 560px;
   padding: 20px 32px;
   font-size: 21px;
   font-family: inherit;
@@ -443,6 +444,7 @@ body {
 }
 
 .modal-card {
+  position: relative;
   background: var(--surface);
   border-radius: var(--radius-lg);
   padding: 32px;
@@ -489,5 +491,10 @@ body {
   .screen { padding: 24px 20px; }
   .screen-title { font-size: 28px; }
   .btn-large { width: 100%; }
-  .app-header { padding: 12px 20px; }
+  .app-header { padding: 12px 20px; flex-wrap: wrap; gap: 8px;}
+  .app-header-logo-img {height: auto; max-height: 38px; }
+  .btn.btn-primary, .btn-secondary {
+    font-size: clamp(18px, 22px, 24px);
+    min-width: unset;
+  }
 }

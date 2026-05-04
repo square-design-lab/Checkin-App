@@ -66,6 +66,28 @@ export default function HelpRequestModal({ isOpen, onClose, prefillMessage = '' 
       }}
     >
       <div className="modal-card">
+        {/* Close icon — always visible in top-right corner */}
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close"
+          style={{
+            position: 'absolute',
+            top: 16,
+            right: 16,
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            color: 'var(--text-muted)',
+            fontSize: 24,
+            lineHeight: 1,
+            padding: 4,
+            touchAction: 'manipulation',
+          }}
+        >
+          ✕
+        </button>
+
         {phase === 'success' ? (
           <div className="modal-success">
             ✓ Message sent!<br />
