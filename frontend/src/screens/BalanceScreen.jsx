@@ -94,7 +94,7 @@ export default function BalanceScreen() {
             className="btn btn-primary"
             onClick={() => navigate('/thankyou')}
           >
-            I'll Pay at the Front Desk
+            Pay with my Provider
           </button>
           <button
             type="button"

@@ -1,22 +1,21 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCheckin } from '../context/CheckinContext';
 import logo from '../assets/brand-icon.webp';
+import HelpRequestModal from '../components/HelpRequestModal';
 
 export default function WelcomeScreen() {
   const navigate = useNavigate();
-  const { locationName } = useCheckin();
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <div className="screen">
       <div className="screen-inner" style={{ textAlign: 'center' }}>
         <div className="welcome-icon" aria-hidden="true">
-          {/* Simple heart/health icon using SVG */}
           <img src={logo} alt="Vantage Mental Health" className="app-header-logo-img" />
         </div>
 
         <h1 className="screen-title" style={{ marginBottom: 10 }}>
-          Welcome
-          {locationName ? ` to ${locationName}` : ''}
+          Welcome to Vantage Mental Health
         </h1>
         <p className="screen-subtitle" style={{ marginBottom: 48 }}>
           Tap below to check in for your appointment
@@ -29,7 +28,21 @@ export default function WelcomeScreen() {
         >
           Check In
         </button>
+
+        <button
+          className="btn btn-secondary btn-large"
+          onClick={() => setModalOpen(true)}
+          style={{ marginTop: 16, minWidth: 280 }}
+        >
+          I don't have an appointment
+        </button>
       </div>
+
+      <HelpRequestModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        prefillMessage="I am in the waiting room and don't have a scheduled appointment."
+      />
     </div>
   );
 }

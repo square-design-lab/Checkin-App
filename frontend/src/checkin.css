@@ -72,7 +72,7 @@ body {
 }
 
 .app-header-logo-img {
-  height: 36px;
+  height: 56px;
   width: auto;
   object-fit: contain;
 }
@@ -428,6 +428,60 @@ body {
   color: var(--text-muted);
   text-align: center;
   margin-top: 20px;
+}
+
+/* ─── Help request modal ─────────────────────────────────────────────────── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal-card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.modal-subtitle {
+  font-size: 16px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.modal-success {
+  text-align: center;
+  padding: 24px 0;
+  font-size: 18px;
+  color: var(--success);
+  font-weight: 600;
+}
+
+/* ─── Fixed help button ──────────────────────────────────────────────────── */
+.help-btn-fixed {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100;
+  width: auto !important;
+  padding: 14px 24px !important;
+  font-size: 16px !important;
+  box-shadow: var(--shadow-lg);
 }
 
 /* ─── iPad responsive ────────────────────────────────────────────────────── */

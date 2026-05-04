@@ -18,8 +18,12 @@ app.use(cors({
 const providerContacts = require('./provider-contacts.json');
 
 const twilioClient =
-  process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN
-    ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
+  process.env.TWILIO_API_KEY_SID && process.env.TWILIO_API_KEY_SECRET
+    ? twilio(
+        process.env.TWILIO_API_KEY_SID,
+        process.env.TWILIO_API_KEY_SECRET,
+        { accountSid: process.env.TWILIO_ACCOUNT_SID }
+      )
     : null;
 
 // ─── Athena OAuth ─────────────────────────────────────────────────────────────
@@ -551,12 +555,51 @@ app.post('/api/checkin/record-payment', async (_req, res) => {
   return res.json({ success: true });
 });
 
+// ─── Teams help request ───────────────────────────────────────────────────────
+
+// POST /api/checkin/help-request
+// Forwards a patient help request to the Vantage Teams channel via Power Automate.
+// Body: { patientName, phoneNumber, message }
+// HIPAA: patientName and phoneNumber are NOT logged.
+
+const TEAMS_WEBHOOK_URL =
+  process.env.TEAMS_WEBHOOK_URL ||
+  'https://default59800dd938624bb2ab142e3238f1b2.82.environment.api.powerplatform.com/powerautomate/automations/direct/workflows/ebe42207c6ad4a39bd82d59e8005c61c/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=fVAgrnrk46dTWJbqyeJ09HYXz0BZ9rP-cZAHPSJBxHc';
+
+app.post('/api/checkin/help-request', async (req, res) => {
+  const { patientName, phoneNumber, message } = req.body;
+
+  if (!patientName) {
+    return res.status(400).json({ error: 'Missing patientName' });
+  }
+
+  try {
+    const response = await axios.post(
+      TEAMS_WEBHOOK_URL,
+      { patientName, phoneNumber, message },
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+
+    const status = response.status;
+    if (status === 200 || status === 202) {
+      console.log('[help-request] sent to Teams');
+      return res.json({ success: true });
+    } else {
+      console.warn('[help-request] Teams error:', status);
+      return res.json({ success: false });
+    }
+  } catch (err) {
+    console.error('[help-request] Teams error:', err.response?.status ?? err.message);
+    return res.json({ success: false });
+  }
+});
+
 // ─── Start ────────────────────────────────────────────────────────────────────
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Vantage check-in backend running on port ${PORT}`);
   console.log(`Athena: ${process.env.ATHENA_BASE_URL} | practice: ${process.env.ATHENA_PRACTICE_ID}`);
-  if (!twilioClient)              console.warn('WARNING: Twilio not configured — SMS disabled');
+  if (!twilioClient)              console.warn('WARNING: Twilio not configured (TWILIO_API_KEY_SID / TWILIO_API_KEY_SECRET missing) — SMS disabled');
   if (!process.env.SUPPORT_PHONE) console.warn('WARNING: SUPPORT_PHONE not set — support alerts disabled');
 });

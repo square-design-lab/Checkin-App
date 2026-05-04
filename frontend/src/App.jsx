@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Routes, Route, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useCheckin } from './context/CheckinContext';
 import logo from './assets/logo.png';
+import HelpRequestModal from './components/HelpRequestModal';
 
 import WelcomeScreen from './screens/WelcomeScreen';
 import VerificationScreen from './screens/VerificationScreen';
@@ -22,6 +23,11 @@ export default function App() {
   const [searchParams] = useSearchParams();
   const { initDept, locationName, resetSession } = useCheckin();
   const timerRef = useRef(null);
+  const [helpModalOpen, setHelpModalOpen] = useState(false);
+
+  // Screens where the floating help button should NOT appear
+  const HELP_BTN_HIDDEN = ['/', '/thankyou', '/qr'];
+  const showHelpBtn = !HELP_BTN_HIDDEN.includes(location.pathname);
   // Track current pathname in a ref so the timer callback can read it
   // without being re-registered on every navigation change.
   const pathnameRef = useRef(location.pathname);
@@ -82,6 +88,23 @@ export default function App() {
           <Route path="/qr" element={<QRCodePage />} />
         </Routes>
       </main>
+
+      {/* Fixed help button — hidden on Welcome, Thank You, and QR pages */}
+      {showHelpBtn && (
+        <button
+          type="button"
+          className="btn btn-secondary help-btn-fixed"
+          onClick={() => setHelpModalOpen(true)}
+        >
+          I need help
+        </button>
+      )}
+
+      <HelpRequestModal
+        isOpen={helpModalOpen}
+        onClose={() => setHelpModalOpen(false)}
+        prefillMessage=""
+      />
     </div>
   );
 }
