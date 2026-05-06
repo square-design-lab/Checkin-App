@@ -389,6 +389,28 @@ app.post('/api/checkin/confirm-arrival', async (req, res) => {
         `${patientFirstName} has arrived for their ${timeDisplay} appointment at ${location}.`
       );
     }
+
+    // Send provider email via Power Automate webhook if opted in.
+    // Silently skips when EMAIL_WEBHOOK_URL is 'PENDING_FROM_CLIENT'.
+    if (provider && provider.email_opt_in && provider.email &&
+        EMAIL_WEBHOOK_URL !== 'PENDING_FROM_CLIENT') {
+      try {
+        const location    = locationName(departmentId);
+        const timeDisplay = appointmentTime || arrivalTime;
+        await axios.post(
+          EMAIL_WEBHOOK_URL,
+          {
+            providerEmail: provider.email,
+            subject: `Patient arrived: ${patientFirstName}`,
+            message: `${patientFirstName} has arrived for their ${timeDisplay} appointment at ${location}.`,
+          },
+          { headers: { 'Content-Type': 'application/json' } }
+        );
+        console.log('[confirm-arrival] Email webhook sent');
+      } catch (err) {
+        console.error('[confirm-arrival] Email webhook error:', err.response?.status ?? err.message);
+      }
+    }
   }
 
   return res.json({ success: true });
@@ -532,14 +554,10 @@ app.post('/api/checkin/balance', async (req, res) => {
     });
 
     // No match, cleanbalance false, or non-positive → $0
-    /*
     const amount =
       entry && entry.cleanbalance === true && typeof entry.balance === 'number' && entry.balance > 0
         ? entry.balance
         : 0;
-    */
-
-    const amount = 25.00;  // TEMP — remove after testing
 
     console.log(`[balance] resolved: $${amount.toFixed(2)}`);
     return res.json({ balance: amount });
@@ -550,9 +568,60 @@ app.post('/api/checkin/balance', async (req, res) => {
   }
 });
 
-// POST /api/checkin/record-payment — reserved for future use
-app.post('/api/checkin/record-payment', async (_req, res) => {
-  return res.json({ success: true });
+// POST /api/checkin/record-payment
+// Calls POST /v1/{practiceId}/patients/{patientId}/collectpayment (eCommerce mode)
+//
+// NOTE: Card data transits the backend to Athena.
+// This is acceptable under Athena's eCommerce mode terms.
+// Do NOT log any card fields (accountnumber, cardsecuritycode, nameoncard).
+// Only log epaymentid on success.
+
+app.post('/api/checkin/record-payment', async (req, res) => {
+  const {
+    patientId, departmentid, appointmentId,
+    accountnumber, expirationmonthmm, expirationyearyyyy,
+    cardsecuritycode, nameoncard, billingzip,
+    copayamount, otheramount,
+  } = req.body;
+
+  if (!patientId || !departmentid || !accountnumber) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  const body = {
+    ecommercemode:        'true',
+    accountnumber,
+    expirationmonthmm,
+    expirationyearyyyy,
+    cardsecuritycode,
+    nameoncard,
+    billingzip,
+    departmentid,
+  };
+
+  if (appointmentId) body.appointmentid = appointmentId;
+  // copayamount takes precedence; fall back to otheramount
+  if (copayamount)        body.copayamount  = copayamount;
+  else if (otheramount)   body.otheramount  = otheramount;
+
+  try {
+    const data = await athenaPost(
+      `/v1/${process.env.ATHENA_PRACTICE_ID}/patients/${patientId}/collectpayment`,
+      body
+    );
+
+    if (data.epaymentid) {
+      console.log('[payment] success, epaymentid:', data.epaymentid);
+      return res.json({ success: true, epaymentId: data.epaymentid });
+    }
+
+    console.warn('[payment] Athena returned no epaymentid:', JSON.stringify(data));
+    return res.json({ success: false, error: 'payment_failed' });
+
+  } catch (err) {
+    console.error('[payment] Athena error:', err.response?.status, err.message);
+    return res.json({ success: false, error: 'payment_failed' });
+  }
 });
 
 // ─── Teams help request ───────────────────────────────────────────────────────
@@ -565,6 +634,12 @@ app.post('/api/checkin/record-payment', async (_req, res) => {
 const TEAMS_WEBHOOK_URL =
   process.env.TEAMS_WEBHOOK_URL ||
   'https://default59800dd938624bb2ab142e3238f1b2.82.environment.api.powerplatform.com/powerautomate/automations/direct/workflows/ebe42207c6ad4a39bd82d59e8005c61c/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=fVAgrnrk46dTWJbqyeJ09HYXz0BZ9rP-cZAHPSJBxHc';
+
+// Email webhook — Power Automate flow for provider arrival email notifications.
+// Set EMAIL_WEBHOOK_URL in .env when Justin provides the real URL.
+// While value is 'PENDING_FROM_CLIENT' the email block silently skips.
+const EMAIL_WEBHOOK_URL =
+  process.env.EMAIL_WEBHOOK_URL || 'PENDING_FROM_CLIENT';
 
 app.post('/api/checkin/help-request', async (req, res) => {
   const { patientName, phoneNumber, message } = req.body;
