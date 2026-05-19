@@ -96,7 +96,7 @@ export default function App() {
           className="btn btn-secondary help-btn-fixed"
           onClick={() => setHelpModalOpen(true)}
         >
-          I need help
+          Request Help
         </button>
       )}
 

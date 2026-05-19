@@ -2,10 +2,10 @@
   {
     "athena_provider_id": "1",
     "provider_name": "Justin Gerstner, MD",
-    "mobile_number": "+8801406383589",
+    "mobile_number": "+16083345463",
     "sms_opt_in": true,
     "email": "justin@vantagementalhealth.org",
-    "email_opt_in": false,
+    "email_opt_in": true,
     "notify_via": "sms"
   },
   {

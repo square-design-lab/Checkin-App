@@ -99,7 +99,14 @@ export default function HelpRequestModal({ isOpen, onClose, prefillMessage = '' 
           <>
             <h2 className="modal-title">Request Help</h2>
             <p className="modal-subtitle">
-              Fill in your details and we'll have someone assist you right away.
+              Fill in your details and we will let the team know you are here and
+              need help. You can also call{' '}
+              <a
+                href="tel:6512171480"
+                style={{ color: 'var(--primary)', fontWeight: 600, whiteSpace: 'nowrap' }}
+              >
+                651-217-1480
+              </a>.
             </p>
 
             <form

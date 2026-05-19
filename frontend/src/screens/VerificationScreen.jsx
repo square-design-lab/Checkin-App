@@ -169,11 +169,8 @@ export default function VerificationScreen() {
               inputMode="numeric"
               value={zip}
               onChange={(e) => setZip(e.target.value.replace(/\D/g, '').slice(0, 5))}
-              required
               autoComplete="postal-code"
-              placeholder="5-digit ZIP"
-              pattern="\d{5}"
-              title="5-digit ZIP code"
+              placeholder="ZIP Code (Optional)"
               disabled={loading}
             />
           </div>

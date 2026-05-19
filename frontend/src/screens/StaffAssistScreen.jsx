@@ -53,6 +53,17 @@ export default function StaffAssistScreen() {
           </p>
         )}
 
+        {reason !== 'no_dept' && (
+          <button
+            type="button"
+            className="btn btn-secondary"
+            style={{ marginTop: 24 }}
+            onClick={() => navigate('/', { replace: true })}
+          >
+            Return to Home
+          </button>
+        )}
+
         <p className="countdown-note">This screen will reset in {countdown} seconds.</p>
       </div>
     </div>

@@ -204,14 +204,16 @@ app.get('/api/checkin/test-athena', async (_req, res) => {
 // ─── POST /api/checkin/find-patient ───────────────────────────────────────────
 // HIPAA: never log req.body — contains patient name, DOB, zip.
 //
-// Athena endpoint: GET /v1/{practiceId}/patients/bestmatch
-//   Required: firstname, lastname, dob (MM/DD/YYYY), + one of zip/phone/email/ssn
+// Athena endpoint: GET /v1/{practiceId}/patients/enhancedbestmatch
+//   Required: firstname, lastname, dob (MM/DD/YYYY)
+//   Optional: zip (included when provided — improves match score)
+//   Score ≥26 = automatch (single result); score ≥23 = strong match
 //   Response: direct array  →  [{ "patientid": "...", ... }]
 
 app.post('/api/checkin/find-patient', async (req, res) => {
   const { firstname, lastname, dob, zip, departmentid } = req.body;
 
-  if (!firstname || !lastname || !dob || !zip) {
+  if (!firstname || !lastname || !dob) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
@@ -223,12 +225,16 @@ app.post('/api/checkin/find-patient', async (req, res) => {
     return res.status(400).json({ error: 'Invalid date format' });
   }
 
-  console.log('[find-patient] Calling bestmatch, dobFormat=MM/DD/YYYY ✓, zipLength=' + String(zip).length);
+  // Build params — zip is optional, include only when provided
+  const params = { firstname, lastname, dob: athenaDob };
+  if (zip && zip.trim()) params.zip = zip.trim();
+
+  console.log('[find-patient] Calling enhancedbestmatch, dobFormat=MM/DD/YYYY ✓, zip=' + (params.zip ? 'provided' : 'omitted'));
 
   try {
     const data = await athenaGet(
-      `/v1/${process.env.ATHENA_PRACTICE_ID}/patients/bestmatch`,
-      { firstname, lastname, dob: athenaDob, zip }
+      `/v1/${process.env.ATHENA_PRACTICE_ID}/patients/enhancedbestmatch`,
+      params
     );
 
     console.log('[find-patient] Athena 200, responseType=' + (Array.isArray(data) ? `array[${data.length}]` : typeof data));
@@ -266,9 +272,8 @@ app.post('/api/checkin/find-patient', async (req, res) => {
 
     if (httpStatus === 400) {
       // 400 = bad request parameters — log the full Athena error so we can debug
-      // param name wrong? dob format issue? This will tell us.
       console.error('[find-patient] 400 from Athena. Full error:', JSON.stringify(errBody));
-      console.error('[find-patient] Params sent — dob:', athenaDob, '| zipLength:', String(zip).length);
+      console.error('[find-patient] Params sent — dob:', athenaDob, '| zip:', params.zip ?? 'omitted');
       return res.json({ status: 'no_match' });
     }
 
@@ -391,9 +396,9 @@ app.post('/api/checkin/confirm-arrival', async (req, res) => {
     }
 
     // Send provider email via Power Automate webhook if opted in.
-    // Silently skips when EMAIL_WEBHOOK_URL is 'PENDING_FROM_CLIENT'.
+    // Silently skips when EMAIL_WEBHOOK_URL is not configured.
     if (provider && provider.email_opt_in && provider.email &&
-        EMAIL_WEBHOOK_URL !== 'PENDING_FROM_CLIENT') {
+        EMAIL_WEBHOOK_URL.startsWith('https://')) {
       try {
         const location    = locationName(departmentId);
         const timeDisplay = appointmentTime || arrivalTime;
